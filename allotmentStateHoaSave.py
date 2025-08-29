@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 
 # ========= GLOBAL CONFIG =========
 API_URL = "http://10.176.100.44:9000/api/StateJITIntegration/ddo-wise-allotment"
-ITERATIONS = 1   # 🔹 how many payloads to send
-AMOUNT_MIN = 1000
-AMOUNT_MAX = 50000
+ITERATIONS = 10   # 🔹 how many payloads to send
+AMOUNT_MIN = 1000000
+AMOUNT_MAX = 500000000
 # =================================
 
 headers = {
@@ -27,6 +27,9 @@ def random_date():
     rand_days = random.randint(0, (end_date - start_date).days)
     return (start_date + timedelta(days=rand_days)).strftime("%Y-%m-%d")
 
+def rand_digits(length):
+    return str(random.randint(10**(length-1), 10**length - 1))
+
 # Read HOAs
 with open("hoas.txt", "r") as f:
     hoas = [line.strip() for line in f.readlines() if line.strip()]
@@ -42,23 +45,23 @@ for n in range(1, ITERATIONS + 1):
     # Loop through all HOAs and build array
     for i, hoa in enumerate(hoas, start=1):
         amount = random_amount()
-        print(hoa)
+        # print(hoa)
         ddo = random.choice(ddocodes)
-        print(ddo)
+        # print(ddo)
         hoa_details_list.append({
             "hoa": f"{hoa}",
             "childAmount": amount,
             "totalAmount": amount,
             "deptCode": "12",
             "ddoCode": f"{ddo}",
-            "allotmentId": (n * 10000) + i,   # unique per payload
+            "allotmentId": f"{rand_digits(5)}{n}",   # unique per payload
             "uoNo": f"UO-{n}{100 + i}",       # unique
             "uoDate": random_date()
         })
 
     # 🔹 One payload with all hoaDetails
     payload = {
-        "memoNo": f"M{100 + n}",
+        "memoNo": f"M{rand_digits(2)}{n}",
         "memoDate": random_date(),
         "finyear": "2025-2026",
         "remarks": f"Quarterly budget allocation batch {n}",
