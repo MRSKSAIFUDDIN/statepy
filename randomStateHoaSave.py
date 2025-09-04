@@ -4,7 +4,7 @@ import base64
 import requests
 import time
 
-API_URL = "http://10.176.100.44:9000/api/StateJITIntegration/state-hoa"
+API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/state-hoa"
 
 headers = {
     "UserId": "WbIfmsStateJIT",
@@ -12,7 +12,7 @@ headers = {
     "Content-Type": "application/json"
 }
 
-Globalcount = 10 
+Globalcount = 2 
 # Function to generate random numeric strings of fixed length
 def rand_digits(length):
     return str(random.randint(10**(length-1), 10**length - 1))
@@ -21,7 +21,7 @@ def rand_digits(length):
 def generate_and_save_hoas(file_name="hoas.txt", count=Globalcount):
     with open(file_name, "w") as f:
         for _ in range(count):
-            demandNo = rand_digits(2)
+            demandNo = "04"
             majorHead = rand_digits(4)
             submajorHead = rand_digits(2)
             minorHead = rand_digits(3)
@@ -41,7 +41,7 @@ def generate_payload(hoa):
     parts = hoa.split("-")
     return [
         {
-            "deptCode": "FD",
+            "deptCode": "AM",
             "demandNo": parts[0],
             "majorHead": parts[1],
             "submajorHead": parts[2],

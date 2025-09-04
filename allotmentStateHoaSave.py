@@ -6,10 +6,10 @@ import time
 from datetime import datetime, timedelta
 
 # ========= GLOBAL CONFIG =========
-API_URL = "http://10.176.100.44:9000/api/StateJITIntegration/ddo-wise-allotment"
-ITERATIONS = 10   # 🔹 how many payloads to send
-AMOUNT_MIN = 1000000
-AMOUNT_MAX = 500000000
+API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/ddo-wise-allotment"
+ITERATIONS = 6   # 🔹 how many payloads to send
+AMOUNT_MIN = 100000
+AMOUNT_MAX = 500000
 # =================================
 
 headers = {
@@ -69,7 +69,7 @@ for n in range(1, ITERATIONS + 1):
         "saoCode": f"SAO{str(n).zfill(2)}",
         "hoaDetails": hoa_details_list
     }
-    print(payload)
+    # print(payload)
     # Encode payload
     payload_str = json.dumps(payload)
     payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
