@@ -1,6 +1,7 @@
 import random
 import json
 import base64
+import hashlib
 import requests
 import time
 
@@ -20,8 +21,8 @@ def rand_digits(length):
 def generate_payload():
     return [
         {
-            "deptCode": "FD",
-            "demandNo": rand_digits(2),
+            "deptCode": "AM",
+            "demandNo": "04",
             "majorHead": rand_digits(4),
             "submajorHead": rand_digits(2),
             "minorHead": rand_digits(3),
@@ -39,12 +40,22 @@ def generate_payload():
         }
     ]
 
-# Run 100 times
+# Run multiple times
 for i in range(1, 10):
     payload = generate_payload()
     payload_str = json.dumps(payload)
+    
+    # Step 1: Base64 encode
     payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
-    data = {"data": payload_base64}
+    
+    # Step 2: SHA256 hash of Base64 string
+    payload_hash = hashlib.sha256(payload_base64.encode("utf-8")).hexdigest()
+    
+    # Step 3: Prepare request body
+    data = {
+        "data": payload_base64,
+        "hash": payload_hash
+    }
 
     try:
         response = requests.post(API_URL, headers=headers, json=data, timeout=10)
@@ -52,5 +63,5 @@ for i in range(1, 10):
     except Exception as e:
         print(f"[{i}] Error: {e}")
 
-    # optional: small delay so you don’t flood the API
+    # Small delay so API is not overloaded
     time.sleep(0.5)

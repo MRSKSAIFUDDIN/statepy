@@ -4,7 +4,7 @@ import requests
 import hashlib
 
 # API endpoint
-API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/ddo-wise-allotment"
+API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/allotment-files"
 
 # Headers
 headers = {
@@ -13,27 +13,21 @@ headers = {
     "Content-Type": "application/json"
 }
 
-# 👉 Raw JSON payload (not yet base64)
+file_path = "D:\\SAIF\\python\\API DOCS\\IntegrationAPI\\pdf\\fileexample_PDF_1MB.pdf"
+
+# Read + encode file
+with open(file_path, "rb") as f:
+    file_b64 = base64.b64encode(f.read()).decode()
+
+# M126
 payload = {
-  "memoNo": "M751",
-  "memoDate": "2025-02-26",
-  "finyear": "2025-2026",
-  "remarks": "Quarterly budget allocation",
-  "purpose": "Allotment of funds to DDOs",
-  "saoCode": "SAO01",
-  "hoaDetails": [
-    {
-      "hoa": "34-2401-01-101-03-201-02-03-V",
-      "childAmount": 5000,
-      "totalAmount": 5000,
-      "deptCode": "12",
-      "ddoCode": "CAFPNA001",
-      "allotmentId": 832185,
-      "uoNo": "UO-501",
-      "uoDate": "2025-08-20"
-    }
-    
-  ]
+    "MemoNo": "M132", 
+    "MemoDate": "2025-10-01",
+    "Finyear": "2025-2026",
+    "SaoCode": "SAO123",
+    "File": file_b64,
+    "FileName" : "file.pdf",
+    "FileType" : "application/pdf"
 }
 
 # Step 1: Convert JSON → string
@@ -42,11 +36,7 @@ payload_str = json.dumps(payload)
 # Step 2: Encode Base64
 payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
 
-# Step 3: Send request
-# data = {"data": payload_base64} changed to new on 9-9-25 
-# with hash newdata = {"data": payload_base64, "hash": "payload_base64_sha256_hash"}
-
-# Step 3: Create SHA256 hash of the Base64 string
+# Step 3: SHA256 hash of base64 string
 payload_hash = hashlib.sha256(payload_base64.encode("utf-8")).hexdigest()
 
 # Step 4: Final request body
@@ -60,3 +50,4 @@ response = requests.post(API_URL, headers=headers, json=newdata)
 
 print("Status:", response.status_code)
 print("Response:", response.text)
+

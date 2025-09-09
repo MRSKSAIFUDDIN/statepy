@@ -4,7 +4,7 @@ import json
 import requests
 
 # API endpoint for withdrawal request
-API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/allotment-withdrawal-request"
+API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/allotment-withdrawal-confirmation"
 
 # Headers
 headers = {
@@ -15,20 +15,8 @@ headers = {
 
 # ✅ Corrected payload
 payload = {
-    "memoNo": "M571",
-    "memoDate": "2025-08-26",
-    "finyear": "2025-2026",
-    "remarks": "Quarterly budget allocation",
-    "purpose": "Allotment of funds to DDOs",
     "saoCode": "SAO01",
-    "hoa": "04-9623-23-787-82-216-18-26-V",
-    "childWithdrawlAmount": 473610,
-    "deptCode": "12",
-    "ddoCode": "CAFPNA001",
     "allotmentId": 229341,
-    "uoNo": "UO-456",
-    "uoDate": "2025-08-20",
-    "totalWithdrawlAmount": 473610,
     "allotmentWithdrawlRequestId": "1"
 }
 

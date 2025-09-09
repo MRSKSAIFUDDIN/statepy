@@ -1,10 +1,11 @@
 import random
 import json
 import base64
+import hashlib
 import requests
 import time
 
-API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/state-hoa"
+API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/state-hoa"
 
 headers = {
     "UserId": "WbIfmsStateJIT",
@@ -13,11 +14,12 @@ headers = {
 }
 
 Globalcount = 2 
+
 # Function to generate random numeric strings of fixed length
 def rand_digits(length):
     return str(random.randint(10**(length-1), 10**length - 1))
 
-# Generate 100 HOA strings and save to file
+# Generate HOA strings and save to file
 def generate_and_save_hoas(file_name="hoas.txt", count=Globalcount):
     with open(file_name, "w") as f:
         for _ in range(count):
@@ -70,8 +72,18 @@ with open("hoas.txt", "r") as f:
 for i, hoa in enumerate(hoas, start=1):
     payload = generate_payload(hoa)
     payload_str = json.dumps(payload)
+
+    # Step A: Base64 encode
     payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
-    data = {"data": payload_base64}
+
+    # Step B: Hash of Base64 string
+    payload_hash = hashlib.sha256(payload_base64.encode("utf-8")).hexdigest()
+
+    # Step C: Prepare data with both base64 and hash
+    data = {
+        "data": payload_base64,
+        "hash": payload_hash
+    }
 
     try:
         response = requests.post(API_URL, headers=headers, json=data, timeout=10)

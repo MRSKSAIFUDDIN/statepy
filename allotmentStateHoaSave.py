@@ -3,10 +3,11 @@ import json
 import requests
 import random
 import time
+import hashlib
 from datetime import datetime, timedelta
 
 # ========= GLOBAL CONFIG =========
-API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/ddo-wise-allotment"
+API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/ddo-wise-allotment"
 ITERATIONS = 6   # 🔹 how many payloads to send
 AMOUNT_MIN = 100000
 AMOUNT_MAX = 500000
@@ -45,17 +46,15 @@ for n in range(1, ITERATIONS + 1):
     # Loop through all HOAs and build array
     for i, hoa in enumerate(hoas, start=1):
         amount = random_amount()
-        # print(hoa)
         ddo = random.choice(ddocodes)
-        # print(ddo)
         hoa_details_list.append({
-            "hoa": f"{hoa}",
+            "hoa": hoa,
             "childAmount": amount,
             "totalAmount": amount,
             "deptCode": "12",
-            "ddoCode": f"{ddo}",
+            "ddoCode": ddo,
             "allotmentId": f"{rand_digits(5)}{n}",   # unique per payload
-            "uoNo": f"UO-{n}{100 + i}",       # unique
+            "uoNo": f"UO-{n}{100 + i}",              # unique
             "uoDate": random_date()
         })
 
@@ -69,11 +68,21 @@ for n in range(1, ITERATIONS + 1):
         "saoCode": f"SAO{str(n).zfill(2)}",
         "hoaDetails": hoa_details_list
     }
-    # print(payload)
-    # Encode payload
+
+    # Step 1: Convert payload to JSON
     payload_str = json.dumps(payload)
+    # print(payload)
+    # Step 2: Encode JSON → Base64
     payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
-    data = {"data": payload_base64}
+
+    # Step 3: Generate SHA256 hash of Base64 string
+    payload_hash = hashlib.sha256(payload_base64.encode("utf-8")).hexdigest()
+
+    # Step 4: Final request body
+    data = {
+        "data": payload_base64,
+        "hash": payload_hash
+    }
 
     try:
         response = requests.post(API_URL, headers=headers, json=data, timeout=10)
