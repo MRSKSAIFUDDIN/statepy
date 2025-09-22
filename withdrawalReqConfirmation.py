@@ -34,7 +34,7 @@ data = {
     "data": payload_base64,
     "hash": payload_hash
 }
-
+print(data)
 # Step 5: Send POST request
 response = requests.post(API_URL, headers=headers, json=data)
 

@@ -5,7 +5,7 @@ import hashlib
 import requests
 import time
 
-API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/state-hoa"
+API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/state-hoa"
 
 headers = {
     "UserId": "WbIfmsStateJIT",

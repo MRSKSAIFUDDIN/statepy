@@ -7,7 +7,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 # ========= GLOBAL CONFIG =========
-API_URL = "http://10.176.100.59:9000/api/StateJITIntegration/ddo-wise-allotment"
+API_URL = "http://10.176.100.56:9000/api/StateJITIntegration/ddo-wise-allotment"
 ITERATIONS = 6   # 🔹 how many payloads to send
 AMOUNT_MIN = 100000
 AMOUNT_MAX = 500000
@@ -51,7 +51,7 @@ for n in range(1, ITERATIONS + 1):
             "hoa": hoa,
             "childAmount": amount,
             "totalAmount": amount,
-            "deptCode": "12",
+            "deptCode": "AM",
             "ddoCode": ddo,
             "allotmentId": f"{rand_digits(5)}{n}",   # unique per payload
             "uoNo": f"UO-{n}{100 + i}",              # unique
@@ -71,7 +71,7 @@ for n in range(1, ITERATIONS + 1):
 
     # Step 1: Convert payload to JSON
     payload_str = json.dumps(payload)
-    # print(payload)
+    print(payload)
     # Step 2: Encode JSON → Base64
     payload_base64 = base64.b64encode(payload_str.encode("utf-8")).decode("utf-8")
 
@@ -91,3 +91,4 @@ for n in range(1, ITERATIONS + 1):
         print(f"[Batch {n}] Error: {e}")
 
     time.sleep(0.5)
+    print("\n---\n")
